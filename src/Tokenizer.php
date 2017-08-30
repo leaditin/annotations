@@ -42,7 +42,7 @@ class Tokenizer
         }
 
         if ($this->isSelf($name)) {
-            return $this->trimClassName($this->reflectionClass->getName());
+            return $this->trimClassName($this->reflectionClass->name);
         }
 
         $length = strlen($name);
@@ -99,7 +99,7 @@ class Tokenizer
 
     /**
      * @param string $className
-     * @return bool|string
+     * @return string
      */
     protected function deriveFullyQualifiedClassName(string $className) : string
     {

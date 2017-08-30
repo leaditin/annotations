@@ -14,7 +14,7 @@ use Leaditin\Annotations\Exception\CollectionException;
  */
 class Collection implements \IteratorAggregate, \Countable
 {
-    /** @var Annotation[] */
+    /** @var array|Annotation[] */
     protected $annotations;
 
     /**

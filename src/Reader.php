@@ -56,17 +56,17 @@ class Reader
      */
     protected function readAnnotationsFromMethods() : array
     {
-        $annotations = [];
+        $annotationsFromMethods = [];
         foreach ($this->reflectionClass->getMethods() as $method) {
-            $collection = $this->parseComment($method->getDocComment());
-            if (empty($collection)) {
+            $methodCollection = $this->parseComment($method->getDocComment());
+            if (empty($methodCollection)) {
                 continue;
             }
 
-            $annotations[$method->getName()] = new Collection(...$collection);
+            $annotationsFromMethods[$method->name] = new Collection(...$methodCollection);
         }
 
-        return $annotations;
+        return $annotationsFromMethods;
     }
 
     /**
@@ -74,17 +74,17 @@ class Reader
      */
     protected function readAnnotationsFromProperties() : array
     {
-        $annotations = [];
+        $annotationsFromProperties = [];
         foreach ($this->reflectionClass->getProperties() as $property) {
-            $collection = $this->parseComment($property->getDocComment());
-            if (empty($collection)) {
+            $propertyCollection = $this->parseComment($property->getDocComment());
+            if (empty($propertyCollection)) {
                 continue;
             }
 
-            $annotations[$property->getName()] = new Collection(...$collection);
+            $annotationsFromProperties[$property->name] = new Collection(...$propertyCollection);
         }
 
-        return $annotations;
+        return $annotationsFromProperties;
     }
 
     /**
@@ -167,9 +167,7 @@ class Reader
     protected function filterName(string $name) : string
     {
         return preg_replace_callback('/^"([^"]*)"$|^\'([^\']*)\'$/', function ($matches) {
-            @list(, $singleQuoted, $doubleQuoted) = $matches;
-
-            return strlen($singleQuoted) ? $singleQuoted : $doubleQuoted;
+            return $matches[2] ?? $matches[1];
         }, trim($name));
     }
 
@@ -191,19 +189,18 @@ class Reader
      */
     protected function filterArguments(string $name, array &$arguments)
     {
-        switch ($name) {
-            case 'var':
-            case 'param':
-            case 'property':
-            case 'method':
-            case 'return':
-            case 'throws':
-                array_walk($arguments, function (&$val) {
-                    $val = preg_replace('/(\$\S+)/', '', $val);
-                    $val = trim($val);
-                    $val = $this->tokenizer->getFullyQualifiedClassName($val);
-                });
-                break;
+        $allowed = [
+            'var', 'param', 'property', 'method', 'return', 'throws',
+        ];
+
+        if (!in_array($name, $allowed, false)) {
+            return;
         }
+
+        array_walk($arguments, function (&$val) {
+            $val = preg_replace('/(\$\S+)/', '', $val);
+            $val = trim($val);
+            $val = $this->tokenizer->getFullyQualifiedClassName($val);
+        });
     }
 }
