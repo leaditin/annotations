@@ -2,18 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations\Storage;
+namespace Leaditin\Annotations\Adapter;
 
-use Leaditin\Annotations\AbstractStorage;
 use Leaditin\Annotations\Reflection;
 
 /**
- * Class Memory
+ * Class MemoryAdapter
  *
- * @package Leaditin\Annotations\Storage
+ * @package Leaditin\Annotations\Adapter
  * @author Igor Vuckovic <igor@vuckovic.biz>
  */
-class Memory extends AbstractStorage
+class MemoryAdapter extends AbstractAdapter
 {
     /**
      * {@inheritdoc}
@@ -21,8 +20,7 @@ class Memory extends AbstractStorage
     public function read(string $class) : Reflection
     {
         if ($this->has($class) === false) {
-            $reflection = $this->get($class);
-            $this->write($class, $reflection);
+            $this->write($class, $this->reader->read($class));
         }
 
         return $this->get($class);

@@ -2,38 +2,38 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations\Tests;
+namespace Leaditin\Annotations\Tests\Reader;
 
 use Leaditin\Annotations\Collection;
 use Leaditin\Annotations\Exception\CollectionException;
 use Leaditin\Annotations\Exception\ReaderException;
 use Leaditin\Annotations\Exception\ReflectionException;
-use Leaditin\Annotations\Reader;
+use Leaditin\Annotations\Reader\ReflectionReader;
 use Leaditin\Annotations\Tests\Assets\Role;
 use Leaditin\Annotations\Tests\Assets\User;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class ReaderTest
+ * Class ReflectionReaderTest
  *
  * @package Leaditin\Annotations\Tests
  * @author Igor Vuckovic <igor@vuckovic.biz>
  */
-class ReaderTest extends TestCase
+class ReflectionReaderTest extends TestCase
 {
     public function testParseThrowsException()
     {
         $this->expectException(ReaderException::class);
         $this->expectExceptionMessage('Unable to read class "Leaditin"');
 
-        $reader = new Reader();
-        $reader->parse('Leaditin');
+        $reader = new ReflectionReader();
+        $reader->read('Leaditin');
     }
 
     public function testParseClassAnnotations()
     {
-        $reader = new Reader();
-        $reflection = $reader->parse(User::class);
+        $reader = new ReflectionReader();
+        $reflection = $reader->read(User::class);
         $classAnnotations = $reflection->getClassAnnotations();
 
         self::assertCount(2, $classAnnotations);
@@ -42,8 +42,8 @@ class ReaderTest extends TestCase
 
     public function testParseMethodAnnotations()
     {
-        $reader = new Reader();
-        $reflection = $reader->parse(User::class);
+        $reader = new ReflectionReader();
+        $reflection = $reader->read(User::class);
         $methodAnnotations = $reflection->getMethodAnnotations('setRole');
 
         self::assertInstanceOf(Collection::class, $methodAnnotations);
@@ -53,8 +53,8 @@ class ReaderTest extends TestCase
 
     public function testParseMethodReadReturn()
     {
-        $reader = new Reader();
-        $reflection = $reader->parse(User::class);
+        $reader = new ReflectionReader();
+        $reflection = $reader->read(User::class);
         $methodAnnotations = $reflection->getMethodAnnotations('setRole');
 
         self::assertInstanceOf(Collection::class, $methodAnnotations);
@@ -64,8 +64,8 @@ class ReaderTest extends TestCase
 
     public function testParseMethodReadThrows()
     {
-        $reader = new Reader();
-        $reflection = $reader->parse(User::class);
+        $reader = new ReflectionReader();
+        $reflection = $reader->read(User::class);
         $methodAnnotations = $reflection->getMethodAnnotations('throwException');
 
         self::assertInstanceOf(Collection::class, $methodAnnotations);
@@ -77,8 +77,8 @@ class ReaderTest extends TestCase
 
     public function testParsePropertyAnnotations()
     {
-        $reader = new Reader();
-        $reflection = $reader->parse(User::class);
+        $reader = new ReflectionReader();
+        $reflection = $reader->read(User::class);
         $propertyAnnotations = $reflection->getPropertyAnnotations('id');
 
         self::assertInstanceOf(Collection::class, $propertyAnnotations);

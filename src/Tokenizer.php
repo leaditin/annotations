@@ -35,16 +35,8 @@ class Tokenizer
      * @param string $name
      * @return string
      */
-    public function getFullyQualifiedClassName(string $name) : string
+    public function resolveFullyQualifiedClassName(string $name) : string
     {
-        if ($this->isScalar($name)) {
-            return $name;
-        }
-
-        if ($this->isSelf($name)) {
-            return $this->trimClassName($this->reflectionClass->name);
-        }
-
         $length = strlen($name);
 
         foreach ($this->getUseNames() as $fullyQualifiedClassName => $useClassName) {
@@ -64,37 +56,76 @@ class Tokenizer
     }
 
     /**
+     * @param string $name
+     * @return string
+     */
+    public function resolveVariableName(string $name) : string
+    {
+        if ($this->isScalar($name)) {
+            return $name;
+        }
+
+        if ($this->isSelf($name)) {
+            return $this->trimClassName($this->reflectionClass->name);
+        }
+
+        return $name;
+    }
+
+    /**
      * @return array
      */
     protected function getUseNames() : array
     {
         if (!array_key_exists('use', $this->structure)) {
-            $class = '';
             $numberOfTokens = count($this->tokens);
             $this->structure['use'] = [];
 
             for ($i = 0; $i < $numberOfTokens; ++$i) {
-                if ($this->tokens[$i][0] !== T_USE) {
-                    continue;
-                }
-
-                for ($j = $i + 1; $j < $numberOfTokens; ++$j) {
-                    if ($this->tokens[$j][0] === T_STRING) {
-                        $class .= '\\' . $this->tokens[$j][1];
-                        continue;
-                    }
-
-                    if ($this->tokens[$j] === ';') {
-                        $fullyQualifiedClassName = $this->deriveFullyQualifiedClassName($class);
-                        $this->structure['use'][$this->trimClassName($fullyQualifiedClassName)] = $this->trimClassName($class);
-                        $class = '';
-                        break;
-                    }
-                }
+                $this->readToken($i, $numberOfTokens);
             }
         }
 
         return $this->structure['use'];
+    }
+
+    /**
+     * @param int $tokenPosition
+     * @param int $numberOfTokens
+     */
+    protected function readToken(int $tokenPosition, int $numberOfTokens)
+    {
+        if ($this->tokens[$tokenPosition][0] !== T_USE) {
+            return;
+        }
+
+        $class = '';
+        for ($j = $tokenPosition + 1; $j < $numberOfTokens; ++$j) {
+            $this->useToken($j, $class);
+        }
+    }
+
+    /**
+     * @param int $tokenPosition
+     * @param string $class
+     */
+    protected function useToken(int $tokenPosition, string &$class)
+    {
+        if ($this->tokens[$tokenPosition][0] === T_STRING) {
+            $class .= '\\' . $this->tokens[$tokenPosition][1];
+        } elseif ($this->tokens[$tokenPosition] === ';') {
+            $this->useClass($class);
+        }
+    }
+
+    /**
+     * @param string $class
+     */
+    protected function useClass(string &$class)
+    {
+        $fullyQualifiedClassName = $this->deriveFullyQualifiedClassName($class);
+        $this->structure['use'][$this->trimClassName($fullyQualifiedClassName)] = $this->trimClassName($class);
+        $class = '';
     }
 
     /**
@@ -105,6 +136,10 @@ class Tokenizer
     {
         while (!class_exists($className)) {
             $length = strrpos($className, '\\');
+            if ($length === false) {
+                return $className;
+            }
+
             $className = substr($className, 0, $length);
         }
 

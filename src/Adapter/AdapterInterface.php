@@ -2,23 +2,23 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations;
+namespace Leaditin\Annotations\Adapter;
 
 use Leaditin\Annotations\Exception\ReaderException;
-use Leaditin\Annotations\Exception\StorageException;
+use Leaditin\Annotations\Reflection;
 
 /**
- * Interface StorageInterface
+ * Interface AdapterInterface
  *
  * @package Leaditin\Annotations
  * @author Igor Vuckovic <igor@vuckovic.biz>
  */
-interface StorageInterface
+interface AdapterInterface
 {
     /**
      * @param string $class
      * @return Reflection
-     * @throws ReaderException|StorageException
+     * @throws ReaderException
      */
     public function read(string $class) : Reflection;
 }

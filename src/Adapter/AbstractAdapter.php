@@ -2,33 +2,30 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations;
+namespace Leaditin\Annotations\Adapter;
 
-use Leaditin\Annotations\Exception\ReaderException;
+use Leaditin\Annotations\Reader\ReaderInterface;
+use Leaditin\Annotations\Reflection;
 
 /**
- * Class AbstractStorage
+ * Class AbstractAdapter
  *
  * @package Leaditin\Annotations
  * @author Igor Vuckovic <igor@vuckovic.biz>
  */
-abstract class AbstractStorage implements StorageInterface
+abstract class AbstractAdapter implements AdapterInterface
 {
-    /** @var Reader */
+    /** @var ReaderInterface */
     protected $reader;
 
     /** @var Reflection[] */
     protected $reflections;
 
     /**
-     * @param Reader|null $reader
+     * @param ReaderInterface $reader
      */
-    public function __construct(Reader $reader = null)
+    public function __construct(ReaderInterface $reader)
     {
-        if ($reader === null) {
-            $reader = new Reader();
-        }
-
         $this->reader = $reader;
         $this->reflections = [];
     }
@@ -36,23 +33,19 @@ abstract class AbstractStorage implements StorageInterface
     /**
      * @param string $class
      * @return Reflection
-     * @throws ReaderException
      */
     protected function get(string $class) : Reflection
     {
-        return $this->reader->parse($class);
+        return $this->reflections[$class];
     }
 
     /**
      * @param string $class
      * @param Reflection $reflection
-     * @return StorageInterface
      */
-    protected function set(string $class, Reflection $reflection) : StorageInterface
+    protected function set(string $class, Reflection $reflection)
     {
         $this->reflections[$class] = $reflection;
-
-        return $this;
     }
 
     /**

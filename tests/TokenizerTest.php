@@ -34,24 +34,28 @@ class TokenizerTest extends TestCase
         unset($this->tokenizer);
     }
 
-    public function testUseClassAsAlias()
+    public function testResolveClassNameFromAlias()
     {
-        $this->assertSame(CollectionException::class, $this->tokenizer->getFullyQualifiedClassName('Alias'));
+        $this->assertSame(CollectionException::class, $this->tokenizer->resolveFullyQualifiedClassName('Alias'));
     }
 
-    public function testUseClass()
+    public function testResolveClassNameFromFullyQualifiedName()
     {
-        $this->assertSame(ReflectionException::class, $this->tokenizer->getFullyQualifiedClassName('ReflectionException'));
+        $this->assertSame(ReflectionException::class, $this->tokenizer->resolveFullyQualifiedClassName('ReflectionException'));
     }
 
-    public function testUseClassFromSameNamespace()
+    public function testResolveClassNameFromSameNamespace()
     {
-        $this->assertSame(Role::class, $this->tokenizer->getFullyQualifiedClassName('Role'));
+        $this->assertSame(Role::class, $this->tokenizer->resolveFullyQualifiedClassName('Role'));
     }
 
-    public function testNotInUseClass()
+    public function testResolveClassNameFromName()
     {
-        $this->assertSame('ReflectionTest', $this->tokenizer->getFullyQualifiedClassName('ReflectionTest'));
-        $this->assertSame('int', $this->tokenizer->getFullyQualifiedClassName('int'));
+        $this->assertSame('ReflectionTest', $this->tokenizer->resolveFullyQualifiedClassName('ReflectionTest'));
+    }
+
+    public function testResolveVariableName()
+    {
+        $this->assertSame('int', $this->tokenizer->resolveVariableName('int'));
     }
 }

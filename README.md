@@ -21,8 +21,10 @@ composer require leaditin/annotations
 Instantiate your preferred storage to read doc block data of any Class in your project.
 
 ```php
-$storage = new \Leaditin\Annotations\Storage\Memory();
-$reflection = $storage->read(\Leaditin\Annotations\Reflection::class);
+$adapter = new \Leaditin\Annotations\Adapter\MemoryAdapter(
+    new \Leaditin\Annotations\Reader\ReflectionReader()
+);
+$reflection = $adapter->read(\Leaditin\Annotations\Reflection::class);
 
 foreach ($reflection->getClassAnnotations() as $collection) {
     if ($collection->has('author')) {

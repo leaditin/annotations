@@ -2,17 +2,21 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations;
+namespace Leaditin\Annotations\Reader;
 
+use Leaditin\Annotations\Annotation;
+use Leaditin\Annotations\Collection;
 use Leaditin\Annotations\Exception\ReaderException;
+use Leaditin\Annotations\Reflection;
+use Leaditin\Annotations\Tokenizer;
 
 /**
- * Class Reader
+ * Class ReflectionReader
  *
  * @package Leaditin\Annotations
  * @author Igor Vuckovic <igor@vuckovic.biz>
  */
-class Reader
+class ReflectionReader implements ReaderInterface
 {
     /** @var \ReflectionClass */
     protected $reflectionClass;
@@ -25,7 +29,7 @@ class Reader
      * @return Reflection
      * @throws ReaderException
      */
-    public function parse(string $class) : Reflection
+    public function read(string $class) : Reflection
     {
         try {
             $this->reflectionClass = new \ReflectionClass($class);
@@ -200,7 +204,8 @@ class Reader
         array_walk($arguments, function (&$val) {
             $val = preg_replace('/(\$\S+)/', '', $val);
             $val = trim($val);
-            $val = $this->tokenizer->getFullyQualifiedClassName($val);
+            $val = $this->tokenizer->resolveVariableName($val);
+            $val = $this->tokenizer->resolveFullyQualifiedClassName($val);
         });
     }
 }
