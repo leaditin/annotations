@@ -16,11 +16,6 @@ $finder = \Symfony\Component\Finder\Finder::create()
     ->ignoreVCS(true)
     ->in(__DIR__)
     ->exclude('vendor')
-    ->exclude('assets')
-    ->exclude('build')
-    ->exclude('salt')
-    ->exclude('sql')
-    ->exclude('var')
     ->notPath('autoload_classmap.php');
 
 return PhpCsFixer\Config::create()
