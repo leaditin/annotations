@@ -37,19 +37,14 @@ class Tokenizer
      */
     public function resolveFullyQualifiedClassName(string $name) : string
     {
-        $length = strlen($name);
-
-        foreach ($this->getUseNames() as $fullyQualifiedClassName => $useClassName) {
-            if (substr($useClassName, -$length) === $name) {
-                return $fullyQualifiedClassName;
-            }
+        $resolvedFromUse = $this->resolveFullyQualifiedClassNameFromUse($name);
+        if (false !== $resolvedFromUse) {
+            return $resolvedFromUse;
         }
 
-        if (0 !== strpos($name, '\\')) {
-            $fullyQualifiedClassName = "{$this->reflectionClass->getNamespaceName()}\\$name";
-            if (class_exists($fullyQualifiedClassName)) {
-                return $this->trimClassName($fullyQualifiedClassName);
-            }
+        $resolvedFromNamespace = $this->resolveFullyQualifiedClassNameFromNamespace($name);
+        if (false !== $resolvedFromNamespace) {
+            return $resolvedFromNamespace;
         }
 
         return $this->trimClassName($name);
@@ -75,7 +70,7 @@ class Tokenizer
     /**
      * @return array
      */
-    protected function getUseNames() : array
+    protected function readUse() : array
     {
         if (!array_key_exists('use', $this->structure)) {
             $numberOfTokens = count($this->tokens);
@@ -175,6 +170,39 @@ class Tokenizer
         ];
 
         return in_array($name, $selves, false);
+    }
+
+    /**
+     * @param string $class
+     * @return bool|int|string
+     */
+    protected function resolveFullyQualifiedClassNameFromUse(string $class)
+    {
+        $length = strlen($class);
+
+        foreach ($this->readUse() as $fullyQualifiedClassName => $useClassName) {
+            if (substr($useClassName, -$length) === $class) {
+                return $fullyQualifiedClassName;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param string $class
+     * @return bool|string
+     */
+    protected function resolveFullyQualifiedClassNameFromNamespace(string $class)
+    {
+        if (0 !== strpos($class, '\\')) {
+            $fullyQualifiedClassName = "{$this->reflectionClass->getNamespaceName()}\\$class";
+            if (class_exists($fullyQualifiedClassName)) {
+                return $this->trimClassName($fullyQualifiedClassName);
+            }
+        }
+
+        return false;
     }
 
     /**

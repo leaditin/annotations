@@ -117,7 +117,7 @@ class ReflectionReader implements ReaderInterface
      */
     protected function parseLine(string $line) : Annotation
     {
-        preg_match('/(\w+)[\s|\(]*([^\)]*)/', $line, $matches);
+        preg_match('/^(\w+)(\(.+\)|\s+.+\n*)/', $line, $matches);
         $name = $matches[1];
         $arguments = $this->parseArgumentsFromLine($matches[2] ?: '');
         $this->filterArguments($name, $arguments);
@@ -131,7 +131,7 @@ class ReflectionReader implements ReaderInterface
      */
     protected function parseArgumentsFromLine(string $line) : array
     {
-        $line = trim($line);
+        $line = preg_replace('/^\((.*?)\)$/', '$1', trim($line));
         $arguments = [];
 
         if ($line === '') {
@@ -159,6 +159,10 @@ class ReflectionReader implements ReaderInterface
     {
         if (false !== strpos($line, '|')) {
             return explode('|', $line);
+        }
+
+        if (false === strpos($line, ',')) {
+            $line = preg_replace('/\s+(\w{1})/', ',$1', $line);
         }
 
         return explode(',', $line);
@@ -202,7 +206,7 @@ class ReflectionReader implements ReaderInterface
         }
 
         array_walk($arguments, function (&$val) {
-            $val = preg_replace('/(\$\S+)/', '', $val);
+            $val = preg_replace('/(\$\w+)$/', '', $val);
             $val = trim($val);
             $val = $this->tokenizer->resolveVariableName($val);
             $val = $this->tokenizer->resolveFullyQualifiedClassName($val);

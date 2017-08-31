@@ -82,7 +82,7 @@ class Collection implements \IteratorAggregate, \Countable
 
     /**
      * @param string $name
-     * @return Collection
+     * @return Collection|Annotation[]
      */
     public function find(string $name) : Collection
     {
