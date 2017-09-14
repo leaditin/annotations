@@ -2,17 +2,17 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations\Adapter;
+namespace Leaditin\Annotations\Collector;
 
 use Leaditin\Annotations\Reflection;
 
 /**
- * Class MemoryAdapter
+ * Class MemoryCollector
  *
- * @package Leaditin\Annotations\Adapter
+ * @package Leaditin\Annotations\Collector
  * @author Igor Vuckovic <igor@vuckovic.biz>
  */
-class MemoryAdapter extends AbstractAdapter
+class MemoryCollector extends AbstractCollector
 {
     /**
      * {@inheritdoc}

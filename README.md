@@ -1,6 +1,6 @@
 # Leaditin\Annotations
 
-A simple Class doc block reader
+A simple API for reading any kind of annotations from PHP Class
 
 [![Build Status][ico-build]][link-build]
 [![Code Quality][ico-code-quality]][link-code-quality]
@@ -21,10 +21,10 @@ composer require leaditin/annotations
 Instantiate your preferred storage to read doc block data of any Class in your project.
 
 ```php
-$adapter = new \Leaditin\Annotations\Adapter\MemoryAdapter(
+$collector = new \Leaditin\Annotations\Collector\MemoryCollector(
     new \Leaditin\Annotations\Reader\ReflectionReader()
 );
-$reflection = $adapter->read(\Leaditin\Annotations\Reflection::class);
+$reflection = $collector->read(\Leaditin\Annotations\Reflection::class);
 
 foreach ($reflection->getClassAnnotations() as $collection) {
     if ($collection->has('author')) {

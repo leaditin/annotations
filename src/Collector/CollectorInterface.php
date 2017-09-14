@@ -2,18 +2,18 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations\Adapter;
+namespace Leaditin\Annotations\Collector;
 
 use Leaditin\Annotations\Exception\ReaderException;
 use Leaditin\Annotations\Reflection;
 
 /**
- * Interface AdapterInterface
+ * Interface CollectorInterface
  *
- * @package Leaditin\Annotations
+ * @package Leaditin\Annotations\Collector
  * @author Igor Vuckovic <igor@vuckovic.biz>
  */
-interface AdapterInterface
+interface CollectorInterface
 {
     /**
      * @param string $class

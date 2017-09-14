@@ -62,7 +62,7 @@ class Annotation
      */
     public function getArgument($name)
     {
-        if (!array_key_exists($name, $this->arguments)) {
+        if (!$this->hasArgument($name)) {
             throw AnnotationException::undefinedArgument($this, $name);
         }
 

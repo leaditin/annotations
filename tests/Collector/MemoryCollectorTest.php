@@ -2,25 +2,25 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations\Tests\Adapter;
+namespace Leaditin\Annotations\Tests\Collector;
 
 use Leaditin\Annotations\Reader\ReflectionReader;
 use Leaditin\Annotations\Reflection;
-use Leaditin\Annotations\Adapter\MemoryAdapter;
+use Leaditin\Annotations\Collector\MemoryCollector;
 use Leaditin\Annotations\Tests\Assets\User;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Class MemoryTest
+ * Class MemoryCollectorTest
  *
- * @package Leaditin\Annotations\Tests\Adapter
+ * @package Leaditin\Annotations\Tests\Collector
  * @author Igor Vuckovic
  */
-class MemoryTest extends TestCase
+class MemoryCollectorTest extends TestCase
 {
-    public function testWrite()
+    public function testRead()
     {
-        $storage = new MemoryAdapter(new ReflectionReader());
+        $storage = new MemoryCollector(new ReflectionReader());
         $reflection = $storage->read(User::class);
 
         self::assertInstanceOf(Reflection::class, $reflection);

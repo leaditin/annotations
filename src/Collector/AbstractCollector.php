@@ -2,18 +2,18 @@
 
 declare(strict_types = 1);
 
-namespace Leaditin\Annotations\Adapter;
+namespace Leaditin\Annotations\Collector;
 
 use Leaditin\Annotations\Reader\ReaderInterface;
 use Leaditin\Annotations\Reflection;
 
 /**
- * Class AbstractAdapter
+ * Class AbstractCollector
  *
- * @package Leaditin\Annotations
+ * @package Leaditin\Annotations\Collector
  * @author Igor Vuckovic <igor@vuckovic.biz>
  */
-abstract class AbstractAdapter implements AdapterInterface
+abstract class AbstractCollector implements CollectorInterface
 {
     /** @var ReaderInterface */
     protected $reader;
