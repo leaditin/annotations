@@ -161,10 +161,6 @@ class ReflectionReader implements ReaderInterface
             return explode('|', $line);
         }
 
-        if (false === strpos($line, ',')) {
-            $line = preg_replace('/\s+(\w{1})/', ',$1', $line);
-        }
-
         return explode(',', $line);
     }
 

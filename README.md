@@ -26,13 +26,12 @@ $collector = new \Leaditin\Annotations\Collector\MemoryCollector(
 );
 $reflection = $collector->read(\Leaditin\Annotations\Reflection::class);
 
-foreach ($reflection->getClassAnnotations() as $collection) {
-    if ($collection->has('author')) {
-        sprintf(
-            'Author: %s',
-            $collection->findOne('author')->getArgument(0)
-        );
-    }
+foreach ($reflection->getClassAnnotations() as $annotation) {
+    printf('@%s %s%s',
+        $annotation->getName(),
+        $annotation->getArgument(0),
+        PHP_EOL
+    );
 }
 
 ```

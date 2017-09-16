@@ -1,6 +1,6 @@
 {
     "name": "leaditin/annotations",
-    "description": "Probability distribution service",
+    "description": "A simple API for reading any kind of annotations from PHP Class",
     "type": "library",
     "license": "MIT",
     "keywords": [
