@@ -60,4 +60,13 @@ class User
     public function void()
     {
     }
+
+    /**
+     * {@inheritDoc}
+     *
+     * @inheritdoc
+     */
+    public function inherit()
+    {
+    }
 }

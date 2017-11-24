@@ -113,11 +113,11 @@ class ReflectionReader implements ReaderInterface
 
     /**
      * @param string $line
-     * @return Annotation
+     * @return bool|Annotation
      */
-    protected function parseLine(string $line) : Annotation
+    protected function parseLine(string $line)
     {
-        preg_match('/^(\w+)(\(.+\)|\s+.+\n*)/', $line, $matches);
+        preg_match('/^(\w+)(\(.+\)|\s+.+\n*|\}?)/', $line, $matches);
         $name = $matches[1];
         $arguments = $this->parseArgumentsFromLine($matches[2] ?: '');
         $this->filterArguments($name, $arguments);

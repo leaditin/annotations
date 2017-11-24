@@ -85,4 +85,16 @@ class ReflectionReaderTest extends TestCase
         self::assertTrue($propertyAnnotations->has('Identity'));
         self::assertSame('id', $propertyAnnotations->findOne('Column')->getArgument('column'));
     }
+
+    public function testParseMethodReadInheritDoc()
+    {
+        $reader = new ReflectionReader();
+        $reflection = $reader->read(User::class);
+        $methodAnnotations = $reflection->getMethodAnnotations('inherit');
+
+        self::assertInstanceOf(Collection::class, $methodAnnotations);
+        self::assertCount(2, $methodAnnotations);
+        self::assertTrue($methodAnnotations->has('inheritDoc'));
+        self::assertTrue($methodAnnotations->has('inheritdoc'));
+    }
 }
